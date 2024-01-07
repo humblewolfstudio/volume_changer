@@ -1,6 +1,6 @@
 # Volume-Changer
 
-TCP Server to modify the volume via application
+TCP Server to modify the volume via tcp message
 
 ## Compatibility
 
