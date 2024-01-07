@@ -1,7 +1,7 @@
 use rand::distributions::Alphanumeric;
 use rand::Rng;
+use std::{iter, env};
 use std::process::Command;
-use std::{iter, ptr::eq};
 
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -14,10 +14,19 @@ mod commands;
 
 #[tokio::main]
 async fn main() {
+    //We collect the args
+    let args: Vec<String> = env::args().collect();
+    //El primer argumento es simpre algo raro? no se
+
     let addr = "0.0.0.0:6369";
     let listener = TcpListener::bind(addr).await.unwrap();
 
-    let session_code = generate_random_code();
+    let session_code: String;
+    if args.len() > 1 {
+        session_code = args[1].clone();
+    }else {
+        session_code = generate_random_code();
+    }
 
     println!("Listening on {}", addr);
     println!("Session code is: {}", session_code);
