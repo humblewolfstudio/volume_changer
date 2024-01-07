@@ -16,4 +16,4 @@ _Missing Link_
 
 ## TODO
 
-Windows compatibility
+Windows compatibility (Maybe implement sound management with this?? https://github.com/RustAudio/cpal)
