@@ -5,7 +5,7 @@ pub enum TCPCommand {
     GET,
     SET,
     MUTE,
-    UNMUTE
+    UNMUTE,
 }
 
 impl fmt::Display for TCPCommand {
