@@ -1,16 +1,18 @@
-use rand::distributions::Alphanumeric;
-use rand::Rng;
-use std::{iter, env};
-use std::process::Command;
+use std::env;
 
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
 };
 
+use handlers::volume_handler::{get_current_volume, mute, set_volume, unmute};
+
 use commands::TCPCommand;
 
+use crate::handlers::auxiliary_functions::generate_random_code;
+
 mod commands;
+mod handlers;
 
 #[tokio::main]
 async fn main() {
@@ -24,7 +26,7 @@ async fn main() {
     let session_code: String;
     if args.len() > 1 {
         session_code = args[1].clone();
-    }else {
+    } else {
         session_code = generate_random_code();
     }
 
@@ -55,8 +57,8 @@ async fn process(mut socket: TcpStream, session_id: &str) {
         println!("Received :{:?}", socket_message);
 
         let message_array: Vec<&str> = socket_message.split_whitespace().collect();
-
-        if !handle_session_id(message_array[0], session_id) {
+        let user_sent_id = message_array[0];
+        if user_sent_id != session_id {
             handle_error(&mut socket, "The Session ID is incorrect".to_string()).await;
             return;
         }
@@ -74,10 +76,6 @@ async fn process(mut socket: TcpStream, session_id: &str) {
             }
         }
     }
-}
-
-fn handle_session_id(user_sent_id: &str, session_id: &str) -> bool {
-    return session_id.eq(user_sent_id);
 }
 
 async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<&str>) {
@@ -102,54 +100,6 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
     return;
 }
 
-fn get_current_volume() -> Vec<u8> {
-    let output = Command::new("osascript")
-        .arg("-e")
-        .arg("output volume of (get volume settings)")
-        .output()
-        .expect("Failed to execute process");
-    let response = output.stdout;
-    return clear_response(response);
-}
-
-fn set_volume(volume: &str) -> Vec<u8> {
-    let volume_number: i32 = volume.parse::<i32>().unwrap();
-
-    if volume_number > 100 || volume_number < 0 {
-        return "Volume has to be between 0 and 100".as_bytes().to_vec();
-    }
-
-    let mut string = "set volume output volume ".to_owned();
-    string.push_str(volume);
-    let output = Command::new("osascript")
-        .arg("-e")
-        .arg(string)
-        .output()
-        .expect("Failed to execute process");
-    let _response = output.stdout;
-    return volume.as_bytes().to_vec();
-}
-
-fn mute() -> Vec<u8> {
-    let output = Command::new("osascript")
-        .arg("-e")
-        .arg("set volume with output muted")
-        .output()
-        .expect("Failed to execute process");
-    let _response = output.stdout;
-    return "OK".into();
-}
-
-fn unmute() -> Vec<u8> {
-    let output = Command::new("osascript")
-        .arg("-e")
-        .arg("set volume without output muted")
-        .output()
-        .expect("Failed to execute process");
-    let _response = output.stdout;
-    return "OK".into();
-}
-
 async fn handle_error(socket: &mut TcpStream, error: String) {
     //& es para dejar utilizar la variable (borrow)
     println!("Error: {:?}", error.to_string());
@@ -169,19 +119,4 @@ async fn send_response(socket: &mut TcpStream, response: Vec<u8>) {
         .await
         .expect("Failed to write error to socket");
     return;
-}
-
-fn generate_random_code() -> String {
-    let mut rng = rand::thread_rng();
-    let code = iter::repeat(())
-        .map(|()| rng.sample(Alphanumeric))
-        .map(char::from)
-        .take(7)
-        .collect();
-    code
-}
-
-fn clear_response(response: Vec<u8>) -> Vec<u8> {
-    let string = String::from_utf8(response).unwrap();
-    string.replace("\n", "").into_bytes()
 }
