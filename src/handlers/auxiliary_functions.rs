@@ -12,7 +12,7 @@ pub fn generate_random_code() -> String {
     let code = iter::repeat(())
         .map(|()| rng.sample(Alphanumeric))
         .map(char::from)
-        .take(7)
+        .take(4)
         .collect();
     code
 }
