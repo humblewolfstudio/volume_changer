@@ -19,7 +19,11 @@ pub fn get_current_volume() -> Vec<u8> {
             response = output.stdout;
         }
         "windows" => {
-            response = "Windows not supported yet".as_bytes().to_vec();
+            let output = Command::new("SetVol.exe")
+                .arg("report")
+                .output()
+                .expect("Failed to execute process");
+            response = output.stdout;
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
