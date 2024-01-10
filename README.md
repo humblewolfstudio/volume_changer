@@ -11,7 +11,7 @@ TCP Server to modify the volume via tcp message
 
 Run local project in rust:
 
-You can pass a 4 digits pass so you can control who can use the service. If not, it'll generate a random 3 digit number and print it in the console.
+You can pass a 4 digits pass so you can control who can use the service. If not, it'll generate a random code and print it in the console.
 
 Example:
 ```console
