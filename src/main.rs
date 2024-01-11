@@ -93,6 +93,9 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
         }
         TCPCommand::UNMUTE => {
             response = unmute();
+        },
+        TCPCommand::CHILLIN => {
+            response = "pingiling".to_string().as_bytes();
         }
     }
 
