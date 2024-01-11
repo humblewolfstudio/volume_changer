@@ -6,6 +6,7 @@ pub enum TCPCommand {
     SET,
     MUTE,
     UNMUTE,
+    CHILLIN
 }
 
 impl fmt::Display for TCPCommand {
@@ -15,6 +16,7 @@ impl fmt::Display for TCPCommand {
             TCPCommand::SET => write!(f, "SET"),
             TCPCommand::MUTE => write!(f, "MUTE"),
             TCPCommand::UNMUTE => write!(f, "UNMUTE"),
+            TCPCommand::CHILLIN => write!(f, "CHILLIN"),
         }
     }
 }
@@ -25,6 +27,7 @@ pub fn process_command(command: &str) -> Result<TCPCommand, String> {
         "set" => return Ok(TCPCommand::SET),
         "mute" => return Ok(TCPCommand::MUTE),
         "unmute" => return Ok(TCPCommand::UNMUTE),
+        "chillin" => return Ok(TCPCommand::CHILLIN),
         _ => return Err(String::from("Command doesnt exist")),
     }
 }
