@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{process::Command, env};
 
 use super::auxiliary_functions::clear_response;
 
@@ -19,11 +19,20 @@ pub fn get_current_volume() -> Vec<u8> {
             response = output.stdout;
         }
         "windows" => {
-            let output = Command::new("SetVol.exe")
+            let exec_path = "SetVol.exe";
+            if let Ok(mut cwd) = env::current_dir() {
+                println!("{:?}", cwd);
+                cwd.push(&exec_path);
+                println!("{:?}", cwd);
+
+                let output = Command::new(cwd)
                 .arg("report")
                 .output()
                 .expect("Failed to execute process");
             response = output.stdout;
+            } else {
+                response = "Cant find current_dir".as_bytes().to_vec();
+            }
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
