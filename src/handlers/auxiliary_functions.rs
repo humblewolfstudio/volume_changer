@@ -13,6 +13,7 @@ pub fn generate_random_code() -> String {
         .map(|()| rng.sample(Alphanumeric))
         .map(char::from)
         .take(4)
-        .collect();
+        .collect::<String>()
+        .to_uppercase();
     code
 }

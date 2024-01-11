@@ -19,6 +19,7 @@ pub fn get_current_volume() -> Vec<u8> {
             response = output.stdout;
         }
         "windows" => {
+            //TODO ????? arreglar aixo xd
             let exec_path = "SetVol.exe";
             if let Ok(mut cwd) = env::current_dir() {
                 println!("{:?}", cwd);
