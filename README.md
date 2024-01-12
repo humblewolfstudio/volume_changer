@@ -26,9 +26,7 @@ foo@bar:~$ cargo build
 
 ## Volume Control Service
 
-MacOS service developed by [kmunoz99](https://github.com/kmunoz99)
-
-_Missing Link_
+[MacOS and iOS](https://gitlab.verde-loro.com/byteremote/byteremote) app developed by [kmunoz99](https://github.com/kmunoz99)
 
 ## TODO
 
