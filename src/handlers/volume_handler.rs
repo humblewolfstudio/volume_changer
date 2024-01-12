@@ -104,3 +104,20 @@ pub fn unmute() -> Vec<u8> {
 
     return response;
 }
+
+pub fn increment() -> Vec<u8> {
+    let current_volume = get_current_volume();
+    let current_volume_string = String::from_utf8_lossy(&current_volume).to_string();
+    let mut volume_int = current_volume_string.parse::<i32>().unwrap_or(0);
+    volume_int += 5;
+    let volume_string = volume_int.to_string();
+    set_volume(&volume_string)
+}
+pub fn decrease() -> Vec<u8> {
+    let current_volume = get_current_volume();
+    let current_volume_string = String::from_utf8_lossy(&current_volume).to_string();
+    let mut volume_int = current_volume_string.parse::<i32>().unwrap_or(0);
+    volume_int -= 5;
+    let volume_string = volume_int.to_string();
+    set_volume(&volume_string)
+}

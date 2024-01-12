@@ -5,7 +5,7 @@ use tokio::{
     net::{TcpListener, TcpStream},
 };
 
-use handlers::volume_handler::{get_current_volume, mute, set_volume, unmute};
+use handlers::volume_handler::{get_current_volume, mute, set_volume, unmute, increment, decrease};
 
 use commands::TCPCommand;
 
@@ -91,11 +91,17 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
         TCPCommand::MUTE => {
             response = mute();
         }
+        TCPCommand::INCREMENT => {
+            response = increment();
+        }
+        TCPCommand::DECREASE => {
+            response = decrease();
+        }
         TCPCommand::UNMUTE => {
             response = unmute();
         },
         TCPCommand::CHILLIN => {
-            response = "pingiling".to_string().as_bytes();
+            response = Vec::from("pingiling".to_string().as_bytes());
         }
     }
 
