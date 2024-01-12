@@ -13,9 +13,14 @@ Run local project in rust:
 
 You can pass a 4 digits code so you can control who can use the service. If not, it'll generate a random code and print it in the console.
 
-Example:
+Example with custom code:
 ```console
 foo@bar:~$ cargo run UF4R
+```
+
+Example without custom code:
+```console
+foo@bar:~$ cargo run
 ```
 
 Build project to target folder:
