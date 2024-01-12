@@ -18,7 +18,7 @@ Example with custom code:
 foo@bar:~$ cargo run UF4R
 ```
 
-Example without custom code:
+Example random code code:
 ```console
 foo@bar:~$ cargo run
 ```
