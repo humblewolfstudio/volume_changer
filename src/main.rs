@@ -11,7 +11,7 @@ use commands::TCPCommand;
 
 use crate::handlers::{
     auxiliary_functions::{generate_random_code, string_to_vecu8},
-    media_handler::{next, prev},
+    media_handler::{next, play, prev},
 };
 
 mod commands;
@@ -137,6 +137,13 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
             }
         },
         TCPCommand::PREV => match prev() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::PLAY => match play() {
             Ok(res) => response = res,
             Err(err) => {
                 error = true;

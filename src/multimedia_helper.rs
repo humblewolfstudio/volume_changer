@@ -81,6 +81,9 @@ fn spotify_command(command: TCPCommand) {
         TCPCommand::PREV => {
             cmd = String::from("tell application \"Spotify\" to previous track");
         }
+        TCPCommand::PLAY => {
+            cmd = String::from("tell application \"Spotify\" to playpause");
+        }
         _ => return,
     }
     base_command_hablder(cmd);
