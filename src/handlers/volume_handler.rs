@@ -1,5 +1,3 @@
-use crate::multimedia_helper::get_front_most_window;
-
 use super::auxiliary_functions::clear_response;
 use super::macos_handler::{get_macos_current_volume, mute_macos, set_macos_volume, unmute_macos};
 
@@ -67,26 +65,7 @@ pub fn mute() -> Result<Vec<u8>, Vec<u8>> {
 
     return Ok(response);
 }
-pub fn next() -> Vec<u8> {
-    let response: Vec<u8>;
-    match OS {
-        "linux" => {
-            response = "Linux not supported :(".as_bytes().to_vec();
-        }
-        "macos" => {
-            let app_name = get_front_most_window();
-            println!("Front app: {}", app_name);
-            //exec_a
-            response = "OK".into();
-        }
-        "windows" => {
-            response = "Windows not supported yet".as_bytes().to_vec();
-        }
-        _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
-    }
 
-    return response;
-}
 pub fn unmute() -> Result<Vec<u8>, Vec<u8>> {
     let response: Vec<u8>;
     match OS {

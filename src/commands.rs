@@ -9,7 +9,9 @@ pub enum TCPCommand {
     CHILLIN,
     INCREMENT,
     DECREASE,
-    NEXT
+    NEXT,
+    PREV,
+    PLAY,
 }
 
 impl fmt::Display for TCPCommand {
@@ -23,6 +25,8 @@ impl fmt::Display for TCPCommand {
             TCPCommand::INCREMENT => write!(f, "VOL_INCREMENT"),
             TCPCommand::NEXT => write!(f, "NEXT"),
             TCPCommand::DECREASE => write!(f, "VOL_DECREASE"),
+            TCPCommand::PREV => write!(f, "PREV"),
+            TCPCommand::PLAY => write!(f, "PLAY"),
         }
     }
 }
@@ -37,6 +41,8 @@ pub fn process_command(command: &str) -> Result<TCPCommand, String> {
         "vol_increment" => return Ok(TCPCommand::INCREMENT),
         "vol_decrease" => return Ok(TCPCommand::DECREASE),
         "next" => return Ok(TCPCommand::NEXT),
+        "prev" => return Ok(TCPCommand::PREV),
+        "play" => return Ok(TCPCommand::PLAY),
         _ => return Err(String::from("Command doesnt exist")),
     }
 }

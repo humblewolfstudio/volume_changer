@@ -7,6 +7,10 @@ pub fn clear_response(response: Vec<u8>) -> Vec<u8> {
     string.replace("\n", "").into_bytes()
 }
 
+pub fn clear_string(string: String) -> String {
+    string.replace("\n", "")
+}
+
 pub fn generate_random_code() -> String {
     let mut rng = rand::thread_rng();
     let code = iter::repeat(())
