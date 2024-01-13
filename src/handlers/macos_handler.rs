@@ -10,7 +10,7 @@ pub fn get_macos_current_volume() -> Result<Vec<u8>, Vec<u8>> {
 
     match output {
         Ok(out) => return Ok(clear_response(out.stdout)),
-        Err(e) => return Err("Failed to execute process".as_bytes().to_vec()),
+        Err(_e) => return Err("Failed to execute process".as_bytes().to_vec()),
     }
 }
 
@@ -21,8 +21,8 @@ pub fn set_macos_volume(volume: &str) -> Result<Vec<u8>, Vec<u8>> {
     let output = Command::new("osascript").arg("-e").arg(string).output();
 
     match output {
-        Ok(out) => return Ok(clear_response(volume.as_bytes().to_vec())),
-        Err(e) => return Err(string_to_vecu8("Failed to execute process")),
+        Ok(_out) => return Ok(clear_response(volume.as_bytes().to_vec())),
+        Err(_e) => return Err(string_to_vecu8("Failed to execute process")),
     }
 }
 
@@ -33,8 +33,8 @@ pub fn mute_macos() -> Result<Vec<u8>, Vec<u8>> {
         .output();
 
     match output {
-        Ok(out) => return Ok(string_to_vecu8("OK")),
-        Err(e) => return Err(string_to_vecu8("Failed to execute process")),
+        Ok(_out) => return Ok(string_to_vecu8("OK")),
+        Err(_e) => return Err(string_to_vecu8("Failed to execute process")),
     }
 }
 
@@ -45,7 +45,7 @@ pub fn unmute_macos() -> Result<Vec<u8>, Vec<u8>> {
         .output();
 
     match output {
-        Ok(out) => return Ok(string_to_vecu8("OK")),
-        Err(e) => return Err(string_to_vecu8("Failed to execute process")),
+        Ok(_out) => return Ok(string_to_vecu8("OK")),
+        Err(_e) => return Err(string_to_vecu8("Failed to execute process")),
     }
 }

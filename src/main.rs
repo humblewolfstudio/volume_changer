@@ -5,11 +5,14 @@ use tokio::{
     net::{TcpListener, TcpStream},
 };
 
-use handlers::volume_handler::{decrease, get_current_volume, increment, mute, set_volume, unmute, next};
+use handlers::volume_handler::{decrease, get_current_volume, increment, mute, set_volume, unmute};
 
 use commands::TCPCommand;
 
-use crate::handlers::auxiliary_functions::{generate_random_code, string_to_vecu8};
+use crate::handlers::{
+    auxiliary_functions::{generate_random_code, string_to_vecu8},
+    media_handler::{next, prev},
+};
 
 mod commands;
 mod handlers;
@@ -126,9 +129,20 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
                 response = err;
             }
         },
-        TCPCommand::NEXT => {
-            response = next();
-        }
+        TCPCommand::NEXT => match next() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::PREV => match prev() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
         TCPCommand::CHILLIN => {
             response = string_to_vecu8("pingiling");
         }
