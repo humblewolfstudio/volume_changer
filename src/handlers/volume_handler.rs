@@ -1,4 +1,5 @@
-use crate::multimedia_helper::get_front_most_window;
+use crate::handlers::auxiliary_functions::{clear_string, string_to_vecu8};
+use crate::multimedia_helper::{app_handler, get_front_most_window};
 
 use super::auxiliary_functions::clear_response;
 use super::macos_handler::{get_macos_current_volume, mute_macos, set_macos_volume, unmute_macos};
@@ -76,8 +77,9 @@ pub fn next() -> Vec<u8> {
         "macos" => {
             let app_name = get_front_most_window();
             println!("Front app: {}", app_name);
+            let res = app_handler(clear_string(app_name));
+            response = string_to_vecu8(&res);
             //exec_a
-            response = "OK".into();
         }
         "windows" => {
             response = "Windows not supported yet".as_bytes().to_vec();
