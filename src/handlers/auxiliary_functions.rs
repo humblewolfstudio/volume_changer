@@ -1,6 +1,6 @@
-use std::iter;
 use rand::distributions::Alphanumeric;
 use rand::Rng;
+use std::iter;
 
 pub fn clear_response(response: Vec<u8>) -> Vec<u8> {
     let string = String::from_utf8(response).unwrap();
@@ -16,4 +16,8 @@ pub fn generate_random_code() -> String {
         .collect::<String>()
         .to_uppercase();
     code
+}
+
+pub fn string_to_vecu8(string: &str) -> Vec<u8> {
+    string.as_bytes().to_vec()
 }

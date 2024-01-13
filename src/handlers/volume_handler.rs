@@ -1,51 +1,34 @@
-use std::{process::Command, env};
+use crate::multimedia_helper::get_front_most_window;
 
 use super::auxiliary_functions::clear_response;
+use super::macos_handler::{get_macos_current_volume, mute_macos, set_macos_volume, unmute_macos};
 
 const OS: &str = std::env::consts::OS;
 
-pub fn get_current_volume() -> Vec<u8> {
+pub fn get_current_volume() -> Result<Vec<u8>, Vec<u8>> {
     let response: Vec<u8>;
     match OS {
         "linux" => {
             response = "Linux not supported :(".as_bytes().to_vec();
         }
-        "macos" => {
-            let output = Command::new("osascript")
-                .arg("-e")
-                .arg("output volume of (get volume settings)")
-                .output()
-                .expect("Failed to execute process");
-            response = output.stdout;
-        }
+        "macos" => match get_macos_current_volume() {
+            Ok(res) => return Ok(res),
+            Err(err) => return Err(err),
+        },
         "windows" => {
-            //TODO ????? arreglar aixo xd
-            let exec_path = "SetVol.exe";
-            if let Ok(mut cwd) = env::current_dir() {
-                println!("{:?}", cwd);
-                cwd.push(&exec_path);
-                println!("{:?}", cwd);
-
-                let output = Command::new(cwd)
-                .arg("report")
-                .output()
-                .expect("Failed to execute process");
-            response = output.stdout;
-            } else {
-                response = "Cant find current_dir".as_bytes().to_vec();
-            }
+            response = "Windows not supported yet".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 
-    return clear_response(response);
+    return Ok(clear_response(response));
 }
 
-pub fn set_volume(volume: &str) -> Vec<u8> {
+pub fn set_volume(volume: &str) -> Result<Vec<u8>, Vec<u8>> {
     let volume_number: i32 = volume.parse::<i32>().unwrap();
 
     if volume_number > 100 || volume_number < 0 {
-        return "Volume has to be between 0 and 100".as_bytes().to_vec();
+        return Err("Volume has to be between 0 and 100".as_bytes().to_vec());
     }
 
     let response: Vec<u8>;
@@ -53,38 +36,47 @@ pub fn set_volume(volume: &str) -> Vec<u8> {
         "linux" => {
             response = "Linux not supported :(".as_bytes().to_vec();
         }
-        "macos" => {
-            let mut string = "set volume output volume ".to_owned();
-            string.push_str(volume);
-
-            let _output = Command::new("osascript")
-                .arg("-e")
-                .arg(string)
-                .output()
-                .expect("Failed to execute process");
-            response = volume.as_bytes().to_vec();
-        }
+        "macos" => match set_macos_volume(volume) {
+            Ok(res) => return Ok(res),
+            Err(err) => return Err(err),
+        },
         "windows" => {
             response = "Windows not supported yet".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 
-    return response;
+    return Ok(response);
 }
 
-pub fn mute() -> Vec<u8> {
+pub fn mute() -> Result<Vec<u8>, Vec<u8>> {
+    let response: Vec<u8>;
+    match OS {
+        "linux" => {
+            response = "Linux not supported :(".as_bytes().to_vec();
+        }
+        "macos" => match mute_macos() {
+            Ok(res) => return Ok(res),
+            Err(err) => return Err(err),
+        },
+        "windows" => {
+            response = "Windows not supported yet".as_bytes().to_vec();
+        }
+        _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
+    }
+
+    return Ok(response);
+}
+pub fn next() -> Vec<u8> {
     let response: Vec<u8>;
     match OS {
         "linux" => {
             response = "Linux not supported :(".as_bytes().to_vec();
         }
         "macos" => {
-            let _output = Command::new("osascript")
-                .arg("-e")
-                .arg("set volume with output muted")
-                .output()
-                .expect("Failed to execute process");
+            let app_name = get_front_most_window();
+            println!("Front app: {}", app_name);
+            //exec_a
             response = "OK".into();
         }
         "windows" => {
@@ -95,26 +87,50 @@ pub fn mute() -> Vec<u8> {
 
     return response;
 }
-
-pub fn unmute() -> Vec<u8> {
+pub fn unmute() -> Result<Vec<u8>, Vec<u8>> {
     let response: Vec<u8>;
     match OS {
         "linux" => {
             response = "Linux not supported :(".as_bytes().to_vec();
         }
-        "macos" => {
-            let _output = Command::new("osascript")
-                .arg("-e")
-                .arg("set volume without output muted")
-                .output()
-                .expect("Failed to execute process");
-            response = "OK".into();
-        }
+        "macos" => match unmute_macos() {
+            Ok(res) => return Ok(res),
+            Err(err) => return Err(err),
+        },
         "windows" => {
             response = "Windows not supported yet".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 
-    return response;
+    return Ok(response);
+}
+
+pub fn increment() -> Result<Vec<u8>, Vec<u8>> {
+    match get_current_volume() {
+        Ok(current_volume) => {
+            let current_volume_string = String::from_utf8_lossy(&current_volume).to_string();
+            let mut volume_int = current_volume_string.parse::<i32>().unwrap_or(0);
+            volume_int += 5;
+            let volume_string = volume_int.to_string();
+            match set_volume(&volume_string) {
+                Ok(res) => return Ok(res),
+                Err(err) => return Err(err),
+            }
+        }
+        Err(err) => return Err(err),
+    }
+}
+
+pub fn decrease() -> Result<Vec<u8>, Vec<u8>> {
+    match get_current_volume() {
+        Ok(current_volume) => {
+            let current_volume_string = String::from_utf8_lossy(&current_volume).to_string();
+            let mut volume_int = current_volume_string.parse::<i32>().unwrap_or(0);
+            volume_int -= 5;
+            let volume_string = volume_int.to_string();
+            set_volume(&volume_string)
+        }
+        Err(err) => return Err(err),
+    }
 }

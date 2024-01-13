@@ -5,14 +5,15 @@ use tokio::{
     net::{TcpListener, TcpStream},
 };
 
-use handlers::volume_handler::{get_current_volume, mute, set_volume, unmute};
+use handlers::volume_handler::{decrease, get_current_volume, increment, mute, set_volume, unmute, next};
 
 use commands::TCPCommand;
 
-use crate::handlers::auxiliary_functions::generate_random_code;
+use crate::handlers::auxiliary_functions::{generate_random_code, string_to_vecu8};
 
 mod commands;
 mod handlers;
+mod multimedia_helper;
 
 #[tokio::main]
 async fn main() {
@@ -59,7 +60,7 @@ async fn process(mut socket: TcpStream, session_id: &str) {
         let message_array: Vec<&str> = socket_message.split_whitespace().collect();
         let user_sent_id = message_array[0];
         if user_sent_id != session_id {
-            handle_error(&mut socket, "The Session ID is incorrect".to_string()).await;
+            handle_error(&mut socket, string_to_vecu8("The Session ID is incorrect")).await;
             return;
         }
 
@@ -70,8 +71,8 @@ async fn process(mut socket: TcpStream, session_id: &str) {
                 handle_response(&mut socket, command, data).await;
                 return;
             }
-            Err(e) => {
-                handle_error(&mut socket, e).await;
+            Err(err) => {
+                handle_error(&mut socket, string_to_vecu8(&err)).await;
                 return;
             }
         }
@@ -81,34 +82,75 @@ async fn process(mut socket: TcpStream, session_id: &str) {
 async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<&str>) {
     println!("Receivd command: {:?}", command.to_string());
     let response: Vec<u8>;
+    let mut error = false;
     match command {
-        TCPCommand::GET => {
-            response = get_current_volume();
-        }
-        TCPCommand::SET => {
-            response = set_volume(data[0]);
-        }
-        TCPCommand::MUTE => {
-            response = mute();
-        }
-        TCPCommand::UNMUTE => {
-            response = unmute();
+        TCPCommand::GET => match get_current_volume() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
         },
+        TCPCommand::SET => match set_volume(data[0]) {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::MUTE => match mute() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::INCREMENT => match increment() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::DECREASE => match decrease() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::UNMUTE => match unmute() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::NEXT => {
+            response = next();
+        }
         TCPCommand::CHILLIN => {
-            response = "pingiling".to_string().as_bytes();
+            response = string_to_vecu8("pingiling");
         }
     }
 
-    send_response(socket, response).await;
+    if error {
+        handle_error(socket, response).await
+    } else {
+        send_response(socket, response).await;
+    }
+
     return;
 }
 
-async fn handle_error(socket: &mut TcpStream, error: String) {
+async fn handle_error(socket: &mut TcpStream, error: Vec<u8>) {
     //& es para dejar utilizar la variable (borrow)
-    println!("Error: {:?}", error.to_string());
-    let buf = String::from(error.to_string()).into_bytes();
+    println!(
+        "Error: {:?}",
+        String::from_utf8(error.clone()).expect("Bytes should be valid utf8")
+    );
     socket
-        .write_all(&buf[0..buf.len()])
+        .write_all(&error[0..error.len()])
         .await
         .expect("Failed to write error to socket");
     return;
