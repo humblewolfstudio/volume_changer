@@ -4,8 +4,20 @@ TCP Server to modify the volume via tcp message
 
 ## Compatibility
 
+### Compatible OS
+
 - [x] MacOS
 - [ ] Windows
+
+
+### Compatible Software
+
+|Software|Play/Pause Media |Next Media |Prev Media|
+|Spotify| [x] | [x] | [x] |
+|VLC | [] | [] | [] |
+|IINA | [] | [] | [] |
+|QuickTime Player | [] | [] | [] |
+
 
 ## Usage
 
@@ -32,7 +44,3 @@ foo@bar:~$ cargo build
 ## Volume Control Service
 
 [MacOS and iOS](https://gitlab.verde-loro.com/byteremote/byteremote) app developed by [kmunoz99](https://github.com/kmunoz99)
-
-## TODO
-
-Windows compatibility (Maybe implement sound management with this?? https://github.com/RustAudio/cpal)
