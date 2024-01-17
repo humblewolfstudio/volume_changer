@@ -13,11 +13,11 @@ TCP Server to modify the volume via tcp message
 ### Compatible Software
 
 |Software|Play/Pause Media |Next Media |Prev Media|
-|Spotify| [x] | [x] | [x] |
+|Spotify| - [x] | - [x] | - [x] |
 |-------|-----|-----|-----|
-|VLC | [ ] | [ ] | [ ] |
-|IINA | [ ] | [ ] | [ ] |
-|QuickTime Player | [ ] | [ ] | [ ] |
+|VLC | - [ ] | - [ ] | - [ ] |
+|IINA | - [ ] | - [ ] | - [ ] |
+|QuickTime Player | - [ ] | - [ ] | - [ ] |
 
 
 ## Usage
