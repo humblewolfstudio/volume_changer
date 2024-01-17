@@ -15,25 +15,20 @@ pub fn get_front_most_window() -> Result<String, String> {
         Ok(out) => return Ok(clear_string(String::from_utf8(out.stderr).unwrap())),
         Err(_e) => return Err("Failed to execute process".to_string()),
     }
-    /*
-    return String::from(
-        String::from_utf8(_output.stderr.to_vec()).expect("Our bytes should be valid utf8"),
-    );*/
 }
 
-pub fn app_handler(app_name: String, command: TCPCommand) -> String {
+pub fn app_handler(app_name: String, command: TCPCommand) -> Result<String, String> {
     println!("{:?}", app_name);
-    match app_name.as_str() {
-        "VLC" => vlc_command(command),
-        "IINA" => iina_command(command),
-        "Quicktime Player" => quicktime_command(command),
-        "Spotify" => spotify_command(command),
-        _ => {}
+    match app_name.to_ascii_lowercase().as_str() {
+        "vlc" => return vlc_command(command),
+        "iina" => return iina_command(command),
+        "quicktime player" => return quicktime_command(command),
+        "spotify" => return spotify_command(command),
+        _ => return Err(app_name + &" not supported uwu"),
     }
-    return String::from("uwu");
 }
 
-fn vlc_command(command: TCPCommand) {
+fn vlc_command(command: TCPCommand) -> Result<String, String> {
     let cmd: String;
     match command {
         TCPCommand::NEXT => {
@@ -42,11 +37,11 @@ fn vlc_command(command: TCPCommand) {
         TCPCommand::PREV => {
             cmd = String::from("");
         }
-        _ => return,
+        _ => return Err("Command not available in VLC".to_string()),
     }
-    base_command_hablder(cmd);
+    return base_command_hablder(cmd);
 }
-fn iina_command(command: TCPCommand) {
+fn iina_command(command: TCPCommand) -> Result<String, String> {
     let cmd: String;
     match command {
         TCPCommand::NEXT => {
@@ -55,24 +50,24 @@ fn iina_command(command: TCPCommand) {
         TCPCommand::PREV => {
             cmd = String::from("");
         }
-        _ => return,
+        _ => return Err("Command not available in IINA".to_string()),
     }
-    base_command_hablder(cmd);
+    return base_command_hablder(cmd);
 }
-fn quicktime_command(command: TCPCommand) {
+fn quicktime_command(command: TCPCommand) -> Result<String, String> {
     let cmd: String;
     match command {
-        TCPCommand::NEXT => {
-            cmd = String::from("tell application \"QuickTime Player\" to next");
-        }
-        TCPCommand::PREV => {
-            cmd = String::from("");
-        }
-        _ => return,
+        TCPCommand::PLAY => {
+            cmd = String::from("tell application \"QuickTime Player\" to tell document 1 to play");
+        },
+        TCPCommand::PAUSE => {
+            cmd = String::from("tell application \"QuickTime Player\" to tell document 1 to stop");
+        },
+        _ => return Err("Command not available in QuickTime".to_string()),
     }
-    base_command_hablder(cmd);
+    return base_command_hablder(cmd);
 }
-fn spotify_command(command: TCPCommand) {
+fn spotify_command(command: TCPCommand) -> Result<String, String> {
     let cmd: String;
     match command {
         TCPCommand::NEXT => {
@@ -84,24 +79,23 @@ fn spotify_command(command: TCPCommand) {
         TCPCommand::PLAY => {
             cmd = String::from("tell application \"Spotify\" to playpause");
         }
-        _ => return,
+        _ => return Err("Command not available in Spotiy".to_string()),
     }
-    base_command_hablder(cmd);
+    return base_command_hablder(cmd);
 }
 
-pub fn base_command_hablder(cmd: String) -> Vec<u8> {
-    let response: Vec<u8>;
-    let output = Command::new("osascript").arg("-e").arg(cmd).output();
+pub fn base_command_hablder(cmd: String) -> Result<String, String> {
+    let output: Result<std::process::Output, std::io::Error> =
+        Command::new("osascript").arg("-e").arg(cmd).output();
 
     match output {
         Ok(_out) => {
             println!("OK");
-            response = "OK".into()
+            return Ok("OK".to_string());
         }
         Err(e) => {
             println!("Error making command: {:?}", e);
-            response = "ERROR".into()
+            return Err("Error executing command".to_string());
         }
     }
-    return response;
 }
