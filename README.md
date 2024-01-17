@@ -14,9 +14,9 @@ TCP Server to modify the volume via tcp message
 
 |Software|Play/Pause Media |Next Media |Prev Media|
 |Spotify| [x] | [x] | [x] |
-|VLC | [] | [] | [] |
-|IINA | [] | [] | [] |
-|QuickTime Player | [] | [] | [] |
+|VLC | [ ] | [ ] | [ ] |
+|IINA | [ ] | [ ] | [ ] |
+|QuickTime Player | [ ] | [ ] | [ ] |
 
 
 ## Usage
