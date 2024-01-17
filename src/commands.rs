@@ -12,6 +12,7 @@ pub enum TCPCommand {
     NEXT,
     PREV,
     PLAY,
+    PAUSE
 }
 
 impl fmt::Display for TCPCommand {
@@ -27,6 +28,7 @@ impl fmt::Display for TCPCommand {
             TCPCommand::DECREASE => write!(f, "VOL_DECREASE"),
             TCPCommand::PREV => write!(f, "PREV"),
             TCPCommand::PLAY => write!(f, "PLAY"),
+            TCPCommand::PAUSE => write!(f, "PAUSE"),
         }
     }
 }
@@ -43,6 +45,7 @@ pub fn process_command(command: &str) -> Result<TCPCommand, String> {
         "next" => return Ok(TCPCommand::NEXT),
         "prev" => return Ok(TCPCommand::PREV),
         "play" => return Ok(TCPCommand::PLAY),
+        "pause" => return Ok(TCPCommand::PAUSE),
         _ => return Err(String::from("Command doesnt exist")),
     }
 }

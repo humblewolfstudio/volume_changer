@@ -1,4 +1,4 @@
-use std::{clone, env};
+use std::env;
 
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -11,7 +11,7 @@ use commands::TCPCommand;
 
 use crate::handlers::{
     auxiliary_functions::{generate_random_code, string_to_vecu8},
-    media_handler::{next, play, prev},
+    media_handler::{next, pause, play, prev},
 };
 
 mod commands;
@@ -46,7 +46,6 @@ async fn main() {
 
 fn get_args(args: Vec<String>, port: &mut String, session_code: &mut String) {
     let l = args.len();
-    println!("{}", l);
     match l {
         0 => {
             *session_code = generate_random_code();
@@ -175,6 +174,13 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
             }
         },
         TCPCommand::PLAY => match play() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
+        TCPCommand::PAUSE => match pause() {
             Ok(res) => response = res,
             Err(err) => {
                 error = true;

@@ -17,7 +17,7 @@ TCP Server to modify the volume via tcp message
 |-------|-----|-----|-----|
 |VLC | :negative_squared_cross_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
 |IINA | :negative_squared_cross_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
-|QuickTime Player | :negative_squared_cross_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
+|QuickTime Player | :white_check_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
 
 
 ## Usage
