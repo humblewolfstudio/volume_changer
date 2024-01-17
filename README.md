@@ -13,8 +13,8 @@ TCP Server to modify the volume via tcp message
 ### Compatible Software
 
 |Software|Play/Pause Media |Next Media |Prev Media|
-|Spotify| :white_check_mark: | :white_check_mark: | :white_check_mark: |
 |-------|-----|-----|-----|
+|Spotify| :white_check_mark: | :white_check_mark: | :white_check_mark: |
 |VLC | :negative_squared_cross_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
 |IINA | :negative_squared_cross_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
 |QuickTime Player | :white_check_mark: | :negative_squared_cross_mark: | :negative_squared_cross_mark: |
