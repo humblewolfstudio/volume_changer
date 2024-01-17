@@ -13,11 +13,11 @@ TCP Server to modify the volume via tcp message
 ### Compatible Software
 
 |Software|Play/Pause Media |Next Media |Prev Media|
-|Spotify| - [x] | - [x] | - [x] |
+|Spotify| :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 |-------|-----|-----|-----|
-|VLC | - [ ] | - [ ] | - [ ] |
-|IINA | - [ ] | - [ ] | - [ ] |
-|QuickTime Player | - [ ] | - [ ] | - [ ] |
+|VLC | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+|IINA | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+|QuickTime Player | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 
 ## Usage
