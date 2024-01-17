@@ -25,11 +25,18 @@ TCP Server to modify the volume via tcp message
 Run local project in rust:
 
 You can pass a 4 digits code so you can control who can use the service. If not, it'll generate a random code and print it in the console.
+You can also give it a custom port after. 
 
 Example with custom code:
 ```console
 foo@bar:~$ cargo run UF4R
 ```
+
+Example with custom code and custom port:
+```console
+foo@bar:~$ cargo run UF4R 1234
+```
+
 
 Example random code code:
 ```console
