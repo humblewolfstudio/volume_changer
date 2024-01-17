@@ -1,4 +1,4 @@
-use std::env;
+use std::{clone, env};
 
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -24,17 +24,15 @@ async fn main() {
     let args: Vec<String> = env::args().collect();
     //El primer argumento es simpre algo raro? no se
 
-    let addr = "0.0.0.0:6369";
-    let listener = TcpListener::bind(addr).await.unwrap();
+    let mut session_code = String::new();
+    let mut port = String::new();
 
-    let session_code: String;
-    if args.len() > 1 {
-        session_code = args[1].clone();
-    } else {
-        session_code = generate_random_code();
-    }
+    get_args(args, &mut port, &mut session_code);
 
-    println!("Listening on {}", addr);
+    let addr = set_addr("0.0.0.0:".to_string(), port);
+    let listener = TcpListener::bind(&addr).await.unwrap();
+
+    println!("Listening on {}", &addr);
     println!("Session code is: {}", session_code);
 
     loop {
@@ -44,6 +42,39 @@ async fn main() {
             process(socket, &session_code_clone).await;
         });
     }
+}
+
+fn get_args(args: Vec<String>, port: &mut String, session_code: &mut String) {
+    let l = args.len();
+    println!("{}", l);
+    match l {
+        0 => {
+            *session_code = generate_random_code();
+            *port = "6369".to_string();
+        }
+        1 => {
+            *session_code = generate_random_code();
+            *port = "6369".to_string();
+        }
+        2 => {
+            *session_code = args[1].clone();
+            *port = "6369".to_string();
+        }
+        3 => {
+            *session_code = args[1].clone();
+            *port = args[2].clone();
+        }
+        _ => {
+            *session_code = args[1].clone();
+            *port = args[2].clone();
+        }
+    }
+
+    return;
+}
+
+fn set_addr(ip: String, port: String) -> String {
+    return ip + &port;
 }
 
 async fn process(mut socket: TcpStream, session_id: &str) {
