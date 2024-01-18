@@ -10,9 +10,12 @@ use handlers::volume_handler::{get_current_volume, mute, set_volume, unmute, inc
 use commands::TCPCommand;
 
 use crate::handlers::auxiliary_functions::generate_random_code;
+use crate::test_json::get_response;
 
 mod commands;
 mod handlers;
+mod multimedia_helper;
+mod test_json;
 
 #[tokio::main]
 async fn main() {
@@ -101,7 +104,8 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
             response = unmute();
         },
         TCPCommand::CHILLIN => {
-            response = Vec::from("pingiling".to_string().as_bytes());
+            response = Vec::from(get_response().as_bytes());
+            //response = Vec::from("pingiling".to_string().as_bytes());
         }
     }
 
