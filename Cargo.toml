@@ -11,3 +11,4 @@ tokio-util = {version = "0.7.9", features= ["full"] }
 futures = "0.3.28"
 bytes = "1.5.0"
 rand = "0.8.5"
+winput = "0.2.5"
