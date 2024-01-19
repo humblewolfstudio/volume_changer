@@ -1,5 +1,6 @@
 use std::env;
-
+use std::os::unix::ffi::OsStrExt;
+use gethostname::gethostname;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
@@ -10,7 +11,7 @@ use handlers::volume_handler::{get_current_volume, mute, set_volume, unmute, inc
 use commands::TCPCommand;
 
 use crate::handlers::auxiliary_functions::generate_random_code;
-use crate::test_json::get_response;
+
 
 mod commands;
 mod handlers;
@@ -60,6 +61,26 @@ async fn process(mut socket: TcpStream, session_id: &str) {
         println!("Received :{:?}", socket_message);
 
         let message_array: Vec<&str> = socket_message.split_whitespace().collect();
+        if message_array.len() == 0 {
+            match commands::process_command(message_array[0]) {
+                Ok(command) => {
+                    TCPCommand::DISCOVERY => {
+                        response = Vec::from(gethostname().as_bytes());
+                        send_response(&mut socket, response).await;
+                        return;
+                    }
+
+                    //data contains the rest of the socket_message
+                    let data = message_array[2..message_array.len()].to_owned();
+                    handle_response(&mut socket, command, data).await;
+                    return;
+                }
+                Err(e) => {
+                    handle_error(&mut socket, e).await;
+                    return;
+                }
+            }
+        }
         let user_sent_id = message_array[0];
         if user_sent_id != session_id {
             handle_error(&mut socket, "The Session ID is incorrect".to_string()).await;
@@ -104,8 +125,11 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
             response = unmute();
         },
         TCPCommand::CHILLIN => {
-            response = Vec::from(get_response().as_bytes());
-            //response = Vec::from("pingiling".to_string().as_bytes());
+            //response = Vec::from(get_response().as_bytes());
+            response = Vec::from("pingiling".to_string().as_bytes());
+        }
+        TCPCommand::DISCOVERY => {
+            response = Vec::from(gethostname().as_bytes());
         }
     }
 

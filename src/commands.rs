@@ -8,7 +8,8 @@ pub enum TCPCommand {
     UNMUTE,
     CHILLIN,
     INCREMENT,
-    DECREASE
+    DECREASE,
+    DISCOVERY
 }
 
 impl fmt::Display for TCPCommand {
@@ -21,6 +22,7 @@ impl fmt::Display for TCPCommand {
             TCPCommand::CHILLIN => write!(f, "CHILLIN"),
             TCPCommand::INCREMENT => write!(f, "VOL_INCREMENT"),
             TCPCommand::DECREASE => write!(f, "VOL_DECREASE"),
+            TCPCommand::DISCOVERY => write!(f, "DISCOVERY")
         }
     }
 }
@@ -34,6 +36,7 @@ pub fn process_command(command: &str) -> Result<TCPCommand, String> {
         "chillin" => return Ok(TCPCommand::CHILLIN),
         "vol_increment" => return Ok(TCPCommand::INCREMENT),
         "vol_decrease" => return Ok(TCPCommand::DECREASE),
+        "discovery" => return Ok(TCPCommand::DISCOVERY),
         _ => return Err(String::from("Command doesnt exist")),
     }
 }
