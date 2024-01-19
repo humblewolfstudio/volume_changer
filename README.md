@@ -7,7 +7,7 @@ TCP Server to modify the volume via tcp message
 ### Compatible OS
 
 - [x] MacOS
-- [ ] Windows
+- [x] Windows
 
 
 ### Compatible Software
