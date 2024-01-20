@@ -1,5 +1,6 @@
 use rand::distributions::Alphanumeric;
 use rand::Rng;
+use sanitizer::StringSanitizer;
 use std::iter;
 
 pub fn clear_response(response: Vec<u8>) -> Vec<u8> {
@@ -43,4 +44,16 @@ pub fn parse_windows_volume(response: String) -> Result<Vec<u8>, Vec<u8>> {
     } else {
         return Err("'Master audio level = ' not found in the string.".into());
     }
+}
+
+pub fn sanitize_number(text: &str) -> &str {
+    let mut sanitizer = StringSanitizer::from(text);
+    &sanitizer.trim().numeric();
+    return &sanitizer.get();
+}
+
+pub fn sanitize_alphanumerically(text: &str) -> &str {
+    let mut sanitizer = StringSanitizer::from(text);
+    &sanitizer.trim().numeric();
+    return &sanitizer.get();
 }

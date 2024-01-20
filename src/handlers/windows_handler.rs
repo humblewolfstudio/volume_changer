@@ -1,5 +1,6 @@
 use super::auxiliary_functions::parse_windows_volume;
 use std::{env, process::Command};
+
 use winput::{Action, Input, Vk};
 
 pub fn get_windows_current_volume() -> Result<Vec<u8>, Vec<u8>> {

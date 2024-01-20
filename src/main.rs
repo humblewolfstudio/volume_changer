@@ -10,7 +10,7 @@ use handlers::volume_handler::{decrease, get_current_volume, increment, mute, se
 use commands::TCPCommand;
 
 use crate::handlers::{
-    auxiliary_functions::{generate_random_code, string_to_vecu8},
+    auxiliary_functions::{generate_random_code, sanitize_alphanumerically, string_to_vecu8},
     media_handler::{next, pause, play, prev},
 };
 
@@ -88,9 +88,12 @@ async fn process(mut socket: TcpStream, session_id: &str) {
         }
 
         let socket_message = String::from_utf8(buf[0..n].to_vec()).unwrap();
-        println!("Received :{:?}", socket_message);
+        println!("Received: {:?}", socket_message);
 
-        let message_array: Vec<&str> = socket_message.split_whitespace().collect();
+        let sanitized_input = sanitize_alphanumerically(&socket_message);
+        println!("Sanitized: {:?}", sanitized_input);
+
+        let message_array: Vec<&str> = sanitized_input.split_whitespace().collect();
         let user_sent_id = message_array[0];
         if user_sent_id != session_id {
             handle_error(&mut socket, string_to_vecu8("The Session ID is incorrect")).await;
