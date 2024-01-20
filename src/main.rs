@@ -10,9 +10,7 @@ use handlers::volume_handler::{decrease, get_current_volume, increment, mute, se
 use commands::TCPCommand;
 
 use crate::handlers::{
-    auxiliary_functions::{
-        generate_random_code, sanitize_alphanumerically, sanitize_number, string_to_vecu8,
-    },
+    auxiliary_functions::{generate_random_code, sanitize_number, string_to_vecu8},
     media_handler::{next, pause, play, prev},
 };
 
@@ -92,10 +90,13 @@ async fn process(mut socket: TcpStream, session_id: &str) {
         let socket_message = String::from_utf8(buf[0..n].to_vec()).unwrap();
         println!("Received: {:?}", socket_message);
 
-        let sanitized_input = sanitize_alphanumerically(&socket_message);
-        println!("Sanitized: {:?}", sanitized_input);
+        let message_array: Vec<&str> = socket_message.split_whitespace().collect();
 
-        let message_array: Vec<&str> = sanitized_input.split_whitespace().collect();
+        if message_array[0].eq("chillin") {
+            send_response(&mut socket, string_to_vecu8("pingiling")).await;
+            return;
+        }
+
         let user_sent_id = message_array[0];
         if user_sent_id != session_id {
             handle_error(&mut socket, string_to_vecu8("The Session ID is incorrect")).await;
@@ -104,6 +105,11 @@ async fn process(mut socket: TcpStream, session_id: &str) {
 
         match commands::process_command(message_array[1]) {
             Ok(command) => {
+                match command {
+                    TCPCommand::CHILLIN => {}
+                    _ => {} //Continue
+                }
+
                 //data contains the rest of the socket_message
                 let data = message_array[2..message_array.len()].to_owned();
                 handle_response(&mut socket, command, data).await;
@@ -213,7 +219,7 @@ async fn handle_error(socket: &mut TcpStream, error: Vec<u8>) {
         String::from_utf8(error.clone()).expect("Bytes should be valid utf8")
     );
     socket
-        .write_all(&error[0..error.len()])
+        .write_all(&error)
         .await
         .expect("Failed to write error to socket");
     return;
@@ -223,7 +229,7 @@ async fn send_response(socket: &mut TcpStream, response: Vec<u8>) {
     let debug_message = String::from_utf8(response.to_owned()).unwrap();
     println!("Sending: {:?}", debug_message);
     socket
-        .write_all(&response[0..response.len()])
+        .write_all(&response)
         .await
         .expect("Failed to write error to socket");
     return;

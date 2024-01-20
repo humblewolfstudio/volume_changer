@@ -32,9 +32,3 @@ pub fn sanitize_number(text: &str) -> String {
     sanitizer.trim().numeric();
     return sanitizer.get();
 }
-
-pub fn sanitize_alphanumerically(text: &str) -> String {
-    let mut sanitizer = StringSanitizer::from(text);
-    sanitizer.trim().numeric();
-    return sanitizer.get();
-}
