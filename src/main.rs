@@ -10,7 +10,9 @@ use handlers::volume_handler::{decrease, get_current_volume, increment, mute, se
 use commands::TCPCommand;
 
 use crate::handlers::{
-    auxiliary_functions::{generate_random_code, sanitize_alphanumerically, string_to_vecu8},
+    auxiliary_functions::{
+        generate_random_code, sanitize_alphanumerically, sanitize_number, string_to_vecu8,
+    },
     media_handler::{next, pause, play, prev},
 };
 
@@ -127,7 +129,7 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
                 response = err;
             }
         },
-        TCPCommand::SET => match set_volume(data[0]) {
+        TCPCommand::SET => match set_volume(&sanitize_number(data[0])) {
             Ok(res) => response = res,
             Err(err) => {
                 error = true;

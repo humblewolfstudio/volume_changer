@@ -1,6 +1,5 @@
 use super::auxiliary_functions::clear_response;
 use super::macos_handler::{get_macos_current_volume, mute_macos, set_macos_volume, unmute_macos};
-use super::windows_handler::{get_windows_current_volume, windows_mute_unmute, windows_set_volume};
 
 const OS: &str = std::env::consts::OS;
 
@@ -14,10 +13,7 @@ pub fn get_current_volume() -> Result<Vec<u8>, Vec<u8>> {
             Ok(res) => return Ok(res),
             Err(err) => return Err(err),
         },
-        "windows" => match get_windows_current_volume() {
-            Ok(res) => return Ok(res),
-            Err(err) => return Err(err),
-        },
+        "windows" => return Err("Windows not supported in this build.".as_bytes().to_vec()),
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 
@@ -40,10 +36,7 @@ pub fn set_volume(volume: &str) -> Result<Vec<u8>, Vec<u8>> {
             Ok(res) => return Ok(res),
             Err(err) => return Err(err),
         },
-        "windows" => match windows_set_volume(volume) {
-            Ok(res) => return Ok(res),
-            Err(err) => return Err(err),
-        },
+        "windows" => return Err("Windows not supported in this build.".as_bytes().to_vec()),
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 
@@ -60,9 +53,7 @@ pub fn mute() -> Result<Vec<u8>, Vec<u8>> {
             Ok(res) => return Ok(res),
             Err(err) => return Err(err),
         },
-        "windows" => {
-            response = windows_mute_unmute();
-        }
+        "windows" => return Err("Windows not supported in this build.".as_bytes().to_vec()),
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 
@@ -79,9 +70,7 @@ pub fn unmute() -> Result<Vec<u8>, Vec<u8>> {
             Ok(res) => return Ok(res),
             Err(err) => return Err(err),
         },
-        "windows" => {
-            response = windows_mute_unmute();
-        }
+        "windows" => return Err("Windows not supported in this build.".as_bytes().to_vec()),
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
 

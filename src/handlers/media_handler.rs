@@ -3,8 +3,6 @@ use crate::{
     multimedia_helper::{app_handler, get_front_most_window},
 };
 
-use super::windows_handler::{windows_next, windows_prev, windows_stop, windows_play_pause};
-
 const OS: &str = std::env::consts::OS;
 
 pub fn next() -> Result<Vec<u8>, Vec<u8>> {
@@ -24,7 +22,7 @@ pub fn next() -> Result<Vec<u8>, Vec<u8>> {
             Err(err) => return Err(string_to_vecu8(&err)),
         },
         "windows" => {
-            response = windows_next();
+            response = "Windows not supported in this build.".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
@@ -49,7 +47,7 @@ pub fn prev() -> Result<Vec<u8>, Vec<u8>> {
             Err(err) => return Err(string_to_vecu8(&err)),
         },
         "windows" => {
-            response = windows_prev();
+            response = "Windows not supported in this build.".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
@@ -74,7 +72,7 @@ pub fn play() -> Result<Vec<u8>, Vec<u8>> {
             Err(err) => return Err(string_to_vecu8(&err)),
         },
         "windows" => {
-            response = windows_play_pause();
+            response = "Windows not supported in this build.".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
@@ -99,7 +97,7 @@ pub fn pause() -> Result<Vec<u8>, Vec<u8>> {
             Err(err) => return Err(string_to_vecu8(&err)),
         },
         "windows" => {
-            response = windows_stop();
+            response = "Windows not supported in this build.".as_bytes().to_vec();
         }
         _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
     }
