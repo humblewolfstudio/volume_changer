@@ -105,11 +105,6 @@ async fn process(mut socket: TcpStream, session_id: &str) {
 
         match commands::process_command(message_array[1]) {
             Ok(command) => {
-                match command {
-                    TCPCommand::CHILLIN => {}
-                    _ => {} //Continue
-                }
-
                 //data contains the rest of the socket_message
                 let data = message_array[2..message_array.len()].to_owned();
                 handle_response(&mut socket, command, data).await;
