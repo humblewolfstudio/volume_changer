@@ -5,6 +5,7 @@ use std::iter;
 
 pub fn clear_response(response: Vec<u8>) -> Vec<u8> {
     let string = String::from_utf8(response).unwrap();
+    println!("{}", string);
     string.replace("\n", "").into_bytes()
 }
 

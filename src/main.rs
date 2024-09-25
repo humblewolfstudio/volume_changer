@@ -5,7 +5,7 @@ use tokio::{
     net::{TcpListener, TcpStream},
 };
 
-use handlers::volume_handler::{decrease, get_current_volume, increment, mute, set_volume, unmute};
+use handlers::volume_handler::{decrease, get_current_volume, increment, mute, set_volume, unmute, get_is_muted};
 
 use commands::TCPCommand;
 
@@ -13,6 +13,7 @@ use crate::handlers::{
     auxiliary_functions::{generate_random_code, sanitize_number, string_to_vecu8},
     media_handler::{next, pause, play, prev},
 };
+use crate::handlers::media_handler::play_status;
 
 mod commands;
 mod handlers;
@@ -191,6 +192,13 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
                 response = err;
             }
         },
+        TCPCommand::PLAY_STATUS => match play_status() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
         TCPCommand::PAUSE => match pause() {
             Ok(res) => response = res,
             Err(err) => {
@@ -201,6 +209,13 @@ async fn handle_response(socket: &mut TcpStream, command: TCPCommand, data: Vec<
         TCPCommand::CHILLIN => {
             response = string_to_vecu8("pingiling");
         }
+        TCPCommand::STATUS => match get_is_muted() {
+            Ok(res) => response = res,
+            Err(err) => {
+                error = true;
+                response = err;
+            }
+        },
     }
 
     if error {

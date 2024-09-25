@@ -1,5 +1,5 @@
 use super::auxiliary_functions::clear_response;
-use super::macos_handler::{get_macos_current_volume, mute_macos, set_macos_volume, unmute_macos};
+use super::macos_handler::{get_macos_current_volume, mute_macos, set_macos_volume, unmute_macos, get_mute_status_macos};
 
 const OS: &str = std::env::consts::OS;
 
@@ -10,6 +10,23 @@ pub fn get_current_volume() -> Result<Vec<u8>, Vec<u8>> {
             response = "Linux not supported :(".as_bytes().to_vec();
         }
         "macos" => match get_macos_current_volume() {
+            Ok(res) => return Ok(res),
+            Err(err) => return Err(err),
+        },
+        "windows" => return Err("Windows not supported in this build.".as_bytes().to_vec()),
+        _ => response = "Running on an unknown operating system".as_bytes().to_vec(),
+    }
+
+    return Ok(clear_response(response));
+}
+
+pub fn get_is_muted() -> Result<Vec<u8>, Vec<u8>> {
+    let response: Vec<u8>;
+    match OS {
+        "linux" => {
+            response = "Linux not supported :(".as_bytes().to_vec();
+        }
+        "macos" => match get_mute_status_macos() {
             Ok(res) => return Ok(res),
             Err(err) => return Err(err),
         },
